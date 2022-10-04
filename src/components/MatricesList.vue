@@ -3,10 +3,10 @@
     <ul class="list">
       <li class="matrix" v-for="(item, idx) in paginatedList" :key="idx">
         <header class="title">
-          {{ item.name }}
+          {{ "name" }}
         </header>
         <main class="content">
-          {{ item.content }}
+          <pre v-text="item.matrixView"></pre>
         </main>
       </li>
     </ul>
@@ -22,18 +22,20 @@
       <button class="btn" @click="currentPage++">Вперед</button>
     </section>
     <section class="add">
-      <button class="btn">Добавить</button>
+      <button class="btn" @click="$emit('add-matrix')">Добавить</button>
     </section>
   </section>
 </template>
 
 <style lang="scss" scoped>
 .wrapper {
-  background-color: rgb(230, 230, 230);
+  background-color: rgb(250, 250, 250);
 
   width: 100%;
 
   padding: 1rem 0.5rem;
+
+  border-bottom: 2px solid rgb(152, 0, 144);
 }
 
 .list {
@@ -76,7 +78,6 @@
     }
 
     .title {
-      margin-bottom: 0.5rem;
       text-align: center;
       padding: 0.2rem 0;
 
@@ -90,6 +91,12 @@
 
       font-size: 1.2rem;
       padding: 0 0.5rem;
+
+      overflow: hidden;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }
@@ -144,17 +151,22 @@ export default {
     matrices: {
       type: Array,
       require: true,
+      default: () => [],
     },
   },
 
-  created() {
-    this.maxPage = Math.ceil(this.matrices.length / 4);
+  emits: {
+    "add-matrix": null,
   },
 
   watch: {
     currentPage() {
       if (this.currentPage == 0) this.currentPage++;
       if (this.currentPage > this.maxPage) this.currentPage--;
+    },
+
+    matrices() {
+      this.maxPage = Math.ceil(this.matrices.length / 4);
     },
   },
 
