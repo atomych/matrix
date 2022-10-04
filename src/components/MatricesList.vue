@@ -3,33 +3,47 @@
     <ul class="list">
       <li class="matrix" v-for="(item, idx) in paginatedList" :key="idx">
         <header class="title">
-          {{ "name" }}
+          {{ item.name }}
         </header>
         <main class="content">
-          <pre v-text="item.matrixView"></pre>
+          <pre v-text="item.source.matrixView"></pre>
         </main>
       </li>
     </ul>
     <section class="empty" v-if="matrices.length == 0">No matrices</section>
     <hr class="line" />
     <section class="control" v-if="matrices.length">
-      <button class="btn" @click="currentPage--">Назад</button>
+      <button class="btn" @click="currentPage--" :disabled="currentPage == 1">
+        Назад
+      </button>
       <div class="counter">
-        <span class="current">{{ currentPage }}</span>
-        из
-        <span class="all">{{ maxPage }}</span>
+        <span v-text="currentPage"></span>
+        <span> из </span>
+        <span v-text="maxPage"></span>
       </div>
-      <button class="btn" @click="currentPage++">Вперед</button>
+      <button
+        class="btn"
+        @click="currentPage++"
+        :disabled="currentPage == maxPage"
+      >
+        Вперед
+      </button>
     </section>
     <section class="add">
-      <button class="btn" @click="$emit('add-matrix')">Добавить</button>
+      <button
+        class="btn"
+        @click="$emit('add-matrix')"
+        :disabled="state == 'create'"
+      >
+        Добавить
+      </button>
     </section>
   </section>
 </template>
 
 <style lang="scss" scoped>
 .wrapper {
-  background-color: rgb(250, 250, 250);
+  background-color: rgb(243, 243, 243);
 
   width: 100%;
 
@@ -71,6 +85,7 @@
 
     &:hover {
       transform: translateY(-0.5rem);
+      box-shadow: 0 0 0.5rem #000;
     }
 
     &:first-child {
@@ -106,7 +121,6 @@
   height: 3px;
 
   width: 100%;
-  max-width: 1100px;
 
   margin: 0 auto;
   margin-bottom: 1rem;
@@ -133,8 +147,42 @@
   text-align: center;
 
   font-size: 2rem;
+  font-weight: 700;
 
   margin-bottom: 1rem;
+}
+
+.btn {
+  font-size: 1.2rem;
+  letter-spacing: 1.3;
+
+  padding: 0.3rem 1.2rem;
+
+  cursor: pointer;
+  transition: all 0.2s linear;
+
+  background-color: rgb(125, 196, 255);
+
+  border: none;
+  border-radius: 0.2rem;
+
+  box-shadow: 0 0 0.2rem #000;
+
+  &:hover {
+    background-color: rgb(0, 140, 255);
+    color: #fff;
+  }
+
+  &:disabled {
+    color: rgba(0, 0, 0, 0.4);
+    background-color: rgb(185, 223, 255);
+  }
+}
+
+.counter {
+  span {
+    font-size: 1.2rem;
+  }
 }
 </style>
 
@@ -152,6 +200,11 @@ export default {
       type: Array,
       require: true,
       default: () => [],
+    },
+    state: {
+      type: String,
+      require: true,
+      default: () => "start",
     },
   },
 
