@@ -11,13 +11,16 @@
       <div class="item">
         <span class="text">Имя: </span><input type="text" v-model="name" />
       </div>
-      <button
-        class="btn"
-        @click="create()"
-        :disabled="rows == 0 || cols == 0 || name == ''"
-      >
-        Далее
-      </button>
+      <div class="control">
+        <button class="btn" @click="$emit('back')">Назад</button>
+        <button
+          class="btn"
+          @click="create()"
+          :disabled="rows == 0 || cols == 0 || name == ''"
+        >
+          Далее
+        </button>
+      </div>
     </div>
     <div class="matrix" v-if="state == 'fill'">
       <div class="row" v-for="(row, idxR) in list" :key="idxR">
@@ -90,6 +93,21 @@
   }
 }
 
+.control {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 2rem;
+
+  .btn {
+    margin-right: 2rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
 .matrix {
   display: flex;
   flex-direction: column;
@@ -118,8 +136,6 @@
 
 .btn {
   width: max-content;
-  margin: 0 auto;
-  margin-top: 2rem;
 
   font-size: 1.2rem;
   letter-spacing: 1.3;
@@ -162,6 +178,7 @@ export default {
 
   emits: {
     "create-matrix": (value) => typeof value == "object",
+    back: null,
   },
 
   methods: {

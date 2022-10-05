@@ -4,8 +4,18 @@
       :matrices="list"
       :state="state"
       @add-matrix="state = 'create'"
+      @select-matrix="selectMatrix"
     />
-    <create-matrix v-if="state == 'create'" @create-matrix="addMatrix" />
+    <create-matrix
+      v-if="state == 'create'"
+      @create-matrix="addMatrix"
+      @back="state = 'start'"
+    />
+    <computed-matrices
+      v-if="state == 'start'"
+      :matrices="list"
+      :selected="selected"
+    />
   </main>
 </template>
 
@@ -21,6 +31,7 @@
 <script>
 import MatricesList from "./components/MatricesList.vue";
 import CreateMatrix from "./components/CreateMatrix.vue";
+import ComputedMatrices from "./components/ComputedMatrices.vue";
 import { Matrix } from "./Matrix.js";
 import { setList, getList } from "./localStorage.js";
 
@@ -29,12 +40,14 @@ export default {
     return {
       list: [],
       state: "start",
+      selected: "",
     };
   },
 
   components: {
     MatricesList,
     CreateMatrix,
+    ComputedMatrices,
   },
 
   created() {
@@ -58,6 +71,10 @@ export default {
       this.state = "start";
 
       setList(this.list);
+    },
+
+    selectMatrix(name) {
+      this.selected = name;
     },
   },
 };

@@ -31,7 +31,7 @@ export class Matrix {
         result.push(temp);
       }
 
-      return result;
+      return new Matrix(result);
     } else {
       return { text: "Sizes of matriсes are not equal", code: 1001 };
     }
@@ -52,20 +52,24 @@ export class Matrix {
         result.push(temp);
       }
 
-      return result;
+      return new Matrix(result);
     } else {
       return { text: "Sizes of matriсes are not equal", code: 1001 };
     }
   }
 
   static multiNumber(item, number) {
-    const result = item.matrixData;
+    const result = [];
     const [maxRows, maxCols] = [item._rows, item._cols];
 
     for (let row = 0; row < maxRows; row++) {
+      const temp = [];
+
       for (let col = 0; col < maxCols; col++) {
-        result[row][col] *= number;
+        temp.push(item.matrixData[row][col] * number);
       }
+
+      result.push(temp);
     }
 
     return new Matrix(result);

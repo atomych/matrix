@@ -1,7 +1,12 @@
 <template>
   <section class="wrapper">
     <ul class="list">
-      <li class="matrix" v-for="(item, idx) in paginatedList" :key="idx">
+      <li
+        class="matrix"
+        v-for="(item, idx) in paginatedList"
+        :key="idx"
+        @click="$emit('select-matrix', item.name)"
+      >
         <header class="title">
           {{ item.name }}
         </header>
@@ -11,7 +16,6 @@
       </li>
     </ul>
     <section class="empty" v-if="matrices.length == 0">No matrices</section>
-    <hr class="line" />
     <section class="control" v-if="matrices.length">
       <button class="btn" @click="currentPage--" :disabled="currentPage == 1">
         Назад
@@ -38,6 +42,7 @@
         Добавить
       </button>
     </section>
+    <hr class="line" />
   </section>
 </template>
 
@@ -47,9 +52,7 @@
 
   width: 100%;
 
-  padding: 1rem 0.5rem;
-
-  border-bottom: 2px solid rgb(152, 0, 144);
+  padding-top: 1rem;
 }
 
 .list {
@@ -123,7 +126,6 @@
   width: 100%;
 
   margin: 0 auto;
-  margin-bottom: 1rem;
 }
 
 .control {
@@ -131,7 +133,7 @@
   justify-content: center;
   align-items: center;
 
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 
   .counter {
     margin: 0 1rem;
@@ -141,6 +143,8 @@
 .add {
   display: flex;
   justify-content: center;
+
+  margin-bottom: 1rem;
 }
 
 .empty {
@@ -210,6 +214,7 @@ export default {
 
   emits: {
     "add-matrix": null,
+    "select-matrix": null,
   },
 
   watch: {
