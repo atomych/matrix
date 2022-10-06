@@ -5,6 +5,7 @@
         class="matrix"
         v-for="(item, idx) in paginatedList"
         :key="idx"
+        :class="{ used: item.used }"
         @click="$emit('select-matrix', item.name)"
       >
         <header class="title">
@@ -83,6 +84,7 @@
     cursor: pointer;
 
     background-color: #fff;
+    opacity: 0.4;
 
     transition: all 0.2s linear;
 
@@ -93,6 +95,10 @@
 
     &:first-child {
       margin-left: 0;
+    }
+
+    &.used {
+      opacity: 1;
     }
 
     .title {

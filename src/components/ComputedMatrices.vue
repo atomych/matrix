@@ -108,7 +108,8 @@
 </style>
 
 <script>
-import { Matrix } from "../Matrix";
+// import { Matrix } from "../js/Matrix";
+import { operandsList, actionsList } from "../js/linearParser";
 
 export default {
   data() {
@@ -116,8 +117,6 @@ export default {
       expression: "",
       names: [],
       answer: "Результат вычислений...",
-      ALPHABET:
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890",
     };
   },
 
@@ -133,6 +132,13 @@ export default {
     },
   },
 
+  emits: {
+    unselected: null,
+    "used-matrices": null,
+  },
+
+  inject: ["ALPHABET"],
+
   watch: {
     matrices() {
       for (let item of this.matrices) {
@@ -142,92 +148,21 @@ export default {
     selected() {
       this.expression += this.selected;
       this.$refs.input.focus();
+      this.$emit("unselected");
+    },
+    expression() {
+      if (this.expression == "") this.answer = "Результат вычислений...";
+
+      const used = operandsList(this.expression, this.ALPHABET);
+      this.$emit("used-matrices", used);
     },
   },
 
   methods: {
     calculate() {
-      let temp1 = "";
-      let temp2 = "";
-      let sign = "";
-      let current = 1;
-      let complete = false;
+      const actions = actionsList(this.expression, this.ALPHABET);
 
-      for (let index = 0; index < this.expression.length; index++) {
-        if (this.ALPHABET.includes(this.expression[index])) {
-          if (current == 1) temp1 += this.expression[index];
-          if (current == 2) temp2 += this.expression[index];
-        }
-
-        if ("+-*".includes(this.expression[index])) {
-          sign = this.expression[index];
-          current = 2;
-        }
-
-        let mtrx1 = this.names.indexOf(temp1) != -1;
-        let mtrx2 = this.names.indexOf(temp2) != -1;
-
-        if (mtrx1 && mtrx2) {
-          complete = true;
-        }
-
-        if (mtrx1 && !mtrx2) {
-          if (
-            temp2 ==
-              temp2
-                .split("")
-                .filter((i) => "1234567890".includes(i))
-                .join("") &&
-            temp2 != ""
-          ) {
-            complete = true;
-            sign = "*n";
-          }
-        }
-
-        if (mtrx2 && !mtrx1) {
-          if (
-            temp1 ==
-              temp1
-                .split("")
-                .filter((i) => "1234567890".includes(i))
-                .join("") &&
-            temp2 != ""
-          ) {
-            complete = true;
-            sign = "*n";
-            let temp = temp1;
-            temp1 = temp2;
-            temp2 = temp;
-          }
-        }
-
-        if (complete) {
-          let item1 = this.matrices.filter((i) => i.name == temp1)[0].source;
-          let item2;
-          if (!isNaN(temp2)) {
-            item2 = temp2;
-          } else {
-            item2 = this.matrices.filter((i) => i.name == temp2)[0].source;
-          }
-
-          if (sign == "+") temp1 = Matrix.sum(item1, item2);
-          if (sign == "-") temp1 = Matrix.residual(item1, item2);
-          if (sign == "*") temp1 = Matrix.multi(item1, item2);
-          if (sign == "*n") temp1 = Matrix.multiNumber(item1, item2);
-
-          if (!(temp1 instanceof Matrix)) {
-            this.log("Ошибка!", false);
-            break;
-          }
-
-          temp2 = "";
-          sign = "";
-          complete = false;
-        }
-      }
-
-      this.log(temp1, true);
+      console.log(actions);
     },
 
     log(data, type) {

@@ -15,6 +15,8 @@
       v-if="state == 'start'"
       :matrices="list"
       :selected="selected"
+      @unselected="selected = ''"
+      @used-matrices="highlight"
     />
   </main>
 </template>
@@ -32,8 +34,8 @@
 import MatricesList from "./components/MatricesList.vue";
 import CreateMatrix from "./components/CreateMatrix.vue";
 import ComputedMatrices from "./components/ComputedMatrices.vue";
-import { Matrix } from "./Matrix.js";
-import { setList, getList } from "./localStorage.js";
+import { Matrix } from "./js/Matrix.js";
+import { setList, getList } from "./js/localStorage.js";
 
 export default {
   data() {
@@ -48,6 +50,10 @@ export default {
     MatricesList,
     CreateMatrix,
     ComputedMatrices,
+  },
+
+  provide: {
+    ALPHABET: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890",
   },
 
   created() {
@@ -65,6 +71,7 @@ export default {
       const newMatrix = {
         name: obj.name,
         source: new Matrix(obj.source),
+        used: false,
       };
 
       this.list = [...this.list, newMatrix];
@@ -75,6 +82,16 @@ export default {
 
     selectMatrix(name) {
       this.selected = name;
+    },
+
+    highlight(names) {
+      for (let item of this.list) {
+        if (names.indexOf(item.name) != -1) {
+          item.used = true;
+        } else {
+          item.used = false;
+        }
+      }
     },
   },
 };

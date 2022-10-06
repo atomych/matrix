@@ -2,21 +2,23 @@
   <section class="wrapper">
     <div class="settings" v-if="state == 'settings'">
       <div class="item">
-        <span class="text">Строки: </span><input type="number" v-model="rows" />
+        <span class="text">Строки: </span
+        ><input type="number" v-model="rows" placeholder="matrix" />
       </div>
       <div class="item">
         <span class="text">Столбцы: </span
         ><input type="number" v-model="cols" />
       </div>
       <div class="item">
-        <span class="text">Имя: </span><input type="text" v-model="name" />
+        <span class="text">Имя: </span
+        ><input type="text" v-model="name" placeholder="matrix" />
       </div>
       <div class="control">
         <button class="btn" @click="$emit('back')">Назад</button>
         <button
           class="btn"
           @click="create()"
-          :disabled="rows == 0 || cols == 0 || name == ''"
+          :disabled="rows == 0 || cols == 0 || name == '' || invalid"
         >
           Далее
         </button>
@@ -86,8 +88,11 @@
         text-align: center;
       }
 
+      opacity: 0.5;
+
       &:focus {
         outline: none;
+        opacity: 1;
       }
     }
   }
@@ -165,6 +170,8 @@
 </style>
 
 <script>
+import { validator } from "../js/validator";
+
 export default {
   data() {
     return {
@@ -173,12 +180,51 @@ export default {
       rows: 0,
       name: "",
       list: [],
+      invalid: false,
     };
   },
 
   emits: {
     "create-matrix": (value) => typeof value == "object",
     back: null,
+  },
+
+  inject: ["ALPHABET"],
+
+  watch: {
+    cols() {
+      const check = validator(this.cols, { type: "number", max: 10 });
+
+      if (check.res == false) {
+        this.invalid = true;
+      } else {
+        this.invalid = false;
+      }
+    },
+
+    rows() {
+      const check = validator(this.rows, { type: "number", max: 10 });
+
+      if (check.res == false) {
+        this.invalid = true;
+      } else {
+        this.invalid = false;
+      }
+    },
+
+    name() {
+      const check = validator(this.name, {
+        type: "string",
+        len: 7,
+        symbols: this.ALPHABET,
+      });
+
+      if (check.res == false) {
+        this.invalid = true;
+      } else {
+        this.invalid = false;
+      }
+    },
   },
 
   methods: {
