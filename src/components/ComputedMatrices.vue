@@ -11,7 +11,7 @@
       />
       <button class="btn" @click="calculate()">Вычислить</button>
     </div>
-    <hr class="line" />
+    <hr class="line"/>
     <div class="output">
       <pre v-text="answer"></pre>
     </div>
