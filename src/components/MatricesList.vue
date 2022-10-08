@@ -16,7 +16,9 @@
         </main>
       </li>
     </ul>
-    <section class="empty" v-if="matrices.length == 0">No matrices</section>
+    <section class="empty" v-if="matrices.length == 0">
+      Нет созданных матриц
+    </section>
     <section class="control" v-if="matrices.length">
       <button class="btn" @click="currentPage--" :disabled="currentPage == 1">
         Назад
