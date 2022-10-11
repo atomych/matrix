@@ -109,7 +109,7 @@
 
 <script>
 // import { Matrix } from "../js/Matrix";
-import { operandsList, actionsList } from "../js/linearParser";
+import { operandsList, calculate } from "../js/linearParser";
 
 export default {
   data() {
@@ -137,8 +137,6 @@ export default {
     "used-matrices": null,
   },
 
-  inject: ["ALPHABET"],
-
   watch: {
     matrices() {
       for (let item of this.matrices) {
@@ -153,21 +151,19 @@ export default {
     expression() {
       if (this.expression == "") this.answer = "Результат вычислений...";
 
-      const used = operandsList(this.expression, this.ALPHABET);
+      const used = operandsList(this.expression);
       this.$emit("used-matrices", used);
     },
   },
 
   methods: {
     calculate() {
-      const actions = actionsList(this.expression, this.ALPHABET);
-
-      console.log(actions);
+      const result = calculate(this.expression, this.matrices);
+      this.log(result);
     },
 
-    log(data, type) {
-      if (type) this.answer = data.matrixView;
-      if (!type) this.answer = data;
+    log(data) {
+      this.answer = data.matrixView ? data.matrixView : data.text;
     },
   },
 };

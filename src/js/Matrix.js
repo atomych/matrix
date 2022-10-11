@@ -164,7 +164,10 @@ export class Matrix {
 
       return Matrix.multiNumber(allianceMtrx, 1 / determinant);
     } else {
-      return "This matrix are not square";
+      return {
+        text: "This matrix are not square",
+        code: 1002,
+      };
     }
   }
 
