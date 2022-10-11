@@ -108,7 +108,6 @@
 </style>
 
 <script>
-// import { Matrix } from "../js/Matrix";
 import { operandsList, calculate } from "../js/linearParser";
 
 export default {
@@ -152,18 +151,43 @@ export default {
       if (this.expression == "") this.answer = "Результат вычислений...";
 
       const used = operandsList(this.expression);
+
       this.$emit("used-matrices", used);
     },
   },
 
   methods: {
     calculate() {
-      const result = calculate(this.expression, this.matrices);
-      this.log(result);
+      const operands = operandsList(this.expression);
+      let validated = true;
+
+      for (let item of operands) {
+        if (!"0123456789".includes(item[0])) {
+          const check = this.matrices.filter((el) => el.name == item).length;
+
+          if (check == 0) {
+            validated = false;
+            break;
+          }
+        }
+      }
+
+      if (validated) {
+        const result = calculate(this.expression, this.matrices);
+        if (result) {
+          this.log(result);
+        } else {
+          this.log({ text: "Некорректный ввод!" });
+        }
+      } else {
+        this.log({ text: "Неверное имя матрицы!" });
+      }
     },
 
     log(data) {
-      this.answer = data.matrixView ? data.matrixView : data.text;
+      if (typeof data == "string") this.answer = data;
+      if (data.matrixView) this.answer = data.matrixView;
+      if (data.text) this.answer = data.text;
     },
   },
 };

@@ -141,6 +141,8 @@ export class Matrix {
       }
 
       return value;
+    } else {
+      return { text: "Matrix is not square!" };
     }
   }
 

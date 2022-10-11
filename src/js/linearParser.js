@@ -197,7 +197,7 @@ export function calculate(string, matrices) {
       if (typeof items[1] == "string") items[1] = getMatrixByName(items[1]);
       if (typeof items[2] == "string") items[2] = getMatrixByName(items[2]);
 
-      if (items.number) {
+      if (items.number && action.sign == "*") {
         if (items[1])
           return {
             operands: [items[1], items.number],
@@ -208,7 +208,7 @@ export function calculate(string, matrices) {
             operands: [items[2], items.number],
             type: "*n",
           };
-      } else {
+      } else if ("+-".includes(action.sign) && !items.number) {
         return {
           operands: [items[1], items[2]],
           type: action.sign,
@@ -221,13 +221,15 @@ export function calculate(string, matrices) {
     const data = getItems(actions[index]);
     let result;
 
-    if (data.type == "|") result = `${Matrix.determinant(data.operand)}`;
-    if (data.type == "+") result = Matrix.sum(...data.operands);
-    if (data.type == "-") result = Matrix.residual(...data.operands);
-    if (data.type == "*") result = Matrix.multi(...data.operands);
-    if (data.type == "*n") result = Matrix.multiNumber(...data.operands);
+    if (data) {
+      if (data.type == "|") result = `${Matrix.determinant(data.operand)}`;
+      if (data.type == "+") result = Matrix.sum(...data.operands);
+      if (data.type == "-") result = Matrix.residual(...data.operands);
+      if (data.type == "*") result = Matrix.multi(...data.operands);
+      if (data.type == "*n") result = Matrix.multiNumber(...data.operands);
 
-    if (index == actions.length - 1) return result;
-    else actions[index].res = result;
+      if (index == actions.length - 1) return result;
+      else actions[index].res = result;
+    }
   }
 }
