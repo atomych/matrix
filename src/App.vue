@@ -69,7 +69,7 @@ export default {
   methods: {
     addMatrix(obj) {
       const newMatrix = {
-        name: obj.name,
+        name: obj.name + 1,
         source: new Matrix(obj.source),
         used: false,
       };
